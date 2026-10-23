@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Regras copiadas do CSS do site em Next.js: brilho dourado, grade de
+   fundo, faixa correndo e a revelacao no scroll. */
+:root {
+  --glow: #c79a5624;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #0a1729;
+  /* Folga pro cabecalho fixo nao cobrir o titulo ao clicar numa ancora. */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  @apply bg-bg font-sans text-fg antialiased;
+}
+
+::selection {
+  @apply bg-gold text-gold-ink;
+}
+
+:focus-visible {
+  outline: 2px solid #c79a56;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@layer components {
+  .tag {
+    @apply font-mono text-gold;
+    letter-spacing: 0.02em;
+    font-size: 0.8rem;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(#f5f1e814 1px, transparent 1px),
+      linear-gradient(90deg, #f5f1e814 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(70% 60% at 50% 30%, #000, #0000);
+  }
+}
+
+@layer utilities {
+  /* Filtros de projeto rolam na horizontal no celular sem mostrar a
+     barra de rolagem (que no Android come altura e fica feia). */
+  .sem-barra {
+    scrollbar-width: none;
+  }
+  .sem-barra::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Area de toque maior que o desenho: links de texto com ~20px de
+     altura viram ~44px clicaveis (minimo recomendado pro dedo), sem
+     mudar nada no visual nem no espacamento. */
+  .alvo-toque {
+    position: relative;
+  }
+  .alvo-toque::after {
+    content: '';
+    position: absolute;
+    inset: -12px 0;
+  }
+}
+
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0s);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .marquee {
+    animation: none;
+  }
+}
